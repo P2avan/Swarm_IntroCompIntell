@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import random
 
+
 # ---- Parameters ----
 GRID_SIZE = 80            # grid is GRID_SIZE x GRID_SIZE
 NUM_ITEMS = 1200          # total items placed randomly
@@ -13,6 +14,7 @@ NEIGHBORHOOD_RADIUS = 1   # R (neighborhood side is (2R+1))
 k1 = 0.1                  # pickup constant (tuneable)
 k2 = 0.3                  # drop constant (tuneable)
 VISUALIZE_INTERVAL = 50   # draw every N steps
+
 
 # ---- Helpers ----
 def toroidal_index(x, size):
@@ -45,8 +47,10 @@ def local_similarity(grid, x, y, R):
                 same += 1
     return (same / total) if total > 0 else 0.0
 
+
 # ---- Initialize grid (items) ----
 grid = -1 * np.ones((GRID_SIZE, GRID_SIZE), dtype=int)  # -1 means empty
+
 
 # randomly place NUM_ITEMS items with types 0..NUM_TYPES-1
 all_cells = [(i, j) for i in range(GRID_SIZE) for j in range(GRID_SIZE)]
@@ -54,6 +58,7 @@ random.shuffle(all_cells)
 for idx in range(min(NUM_ITEMS, GRID_SIZE * GRID_SIZE)):
     x, y = all_cells[idx]
     grid[x, y] = random.randrange(NUM_TYPES)
+
 
 # ---- Initialize agents ----
 # Each agent: (x,y, carrying) where carrying is -1 for empty or type int
@@ -64,6 +69,7 @@ for a in range(NUM_AGENTS):
     x = random.randrange(GRID_SIZE)
     y = random.randrange(GRID_SIZE)
     agents.append([x, y, -1])
+
 
 # ---- Visualization setup ----
 cmap = plt.get_cmap('tab10')
@@ -81,8 +87,10 @@ def grid_to_rgb(grid):
         rgb[mask] = color
     return rgb
 
+
 # initial image
 im.set_data(grid_to_rgb(grid))
+
 
 # ---- Termite rules ----
 def compute_f_for_type(grid, x, y, item_type):
@@ -148,6 +156,7 @@ def step_simulation():
             # carrying: try drop (only if cell empty)
             if grid[x, y] == -1:
                 try_drop(agent)
+
 
 # ---- Animation update ----
 step_count = 0
