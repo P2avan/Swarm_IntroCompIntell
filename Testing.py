@@ -5,10 +5,10 @@ import random
 
 
 # ---- Parameters ----
-GRID_SIZE = 80            # grid is GRID_SIZE x GRID_SIZE
-NUM_ITEMS = 1200          # total items placed randomly
-NUM_TYPES = 3             # kinds/colors of items
-NUM_AGENTS = 200          # number of termites
+GRID_SIZE = 50            # grid is GRID_SIZE x GRID_SIZE
+NUM_ITEMS = 10            # total items placed randomly
+NUM_TYPES = 2             # kinds/colors of items
+NUM_AGENTS = 500          # number of termites
 STEPS = 20000             # animation steps (or runtime steps)
 NEIGHBORHOOD_RADIUS = 1   # R (neighborhood side is (2R+1))
 k1 = 0.1                  # pickup constant (tuneable)
