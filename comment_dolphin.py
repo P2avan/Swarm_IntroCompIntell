@@ -21,14 +21,14 @@ from matplotlib.animation import FuncAnimation
 # size of the square world (GRID_SIZE x GRID_SIZE)
 GRID_SIZE = 80
 # starting count of fish (prey)
-INITIAL_FISH = 1200
+INITIAL_FISH = 100
 # starting count of dolphins (predators)
-INITIAL_DOLPHINS = 25
+INITIAL_DOLPHINS = 15
 
 # probability that a fish reproduces into a neighboring cell each step
-FISH_REPRODUCTION_PROB = 0.02
+FISH_REPRODUCTION_PROB = 0.0175
 # probability that a fish attempts to move each step
-FISH_MOVE_PROB = 0.9
+FISH_MOVE_PROB = 0.5
 
 # how far (in Chebyshev distance) a dolphin can detect fish
 DOLPHIN_VISION_RADIUS = 5
@@ -37,16 +37,16 @@ DOLPHIN_MOVE_BIAS = 0.85
 # energy cost dolphins pay each step
 DOLPHIN_STEP_COST = 1
 # energy dolphins gain when they eat a fish
-DOLPHIN_EAT_GAIN = 14
+DOLPHIN_EAT_GAIN = 4
 # energy level at/above which dolphins attempt to reproduce
-DOLPHIN_REPRODUCTION_THRESHOLD = 24
+DOLPHIN_REPRODUCTION_THRESHOLD = 4
 # energy taken from parent when reproducing (child gets small starting energy)
 DOLPHIN_REPRODUCTION_COST = 12
 
 # total internal steps to simulate
 STEPS = 2000
 # number of internal steps per rendered animation frame
-VISUALIZE_EVERY = 5
+VISUALIZE_EVERY = 2
 # random seed for reproducibility (set to None for full randomness)
 RANDOM_SEED = 0
 
