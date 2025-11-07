@@ -14,21 +14,21 @@ from matplotlib.animation import FuncAnimation
 
 # ------------------ Parameters ------------------ #
 GRID_SIZE = 80
-INITIAL_FISH = 1200
-INITIAL_DOLPHINS = 25
+INITIAL_FISH = 100
+INITIAL_DOLPHINS = 15
 
-FISH_REPRODUCTION_PROB = 0.02   # chance per step to spawn into a neighbor
-FISH_MOVE_PROB = 0.9            # chance a fish attempts a move
+FISH_REPRODUCTION_PROB = 0.0175   # chance per step to spawn into a neighbor
+FISH_MOVE_PROB = 0.5            # chance a fish attempts a move
 
 DOLPHIN_VISION_RADIUS = 5       # how far dolphins "see" fish (Chebyshev)
 DOLPHIN_MOVE_BIAS = 0.85        # prob to bias step toward nearest seen fish
 DOLPHIN_STEP_COST = 1           # energy spent each step
-DOLPHIN_EAT_GAIN = 14           # energy from eating one fish
-DOLPHIN_REPRODUCTION_THRESHOLD = 24
+DOLPHIN_EAT_GAIN = 4           # energy from eating one fish
+DOLPHIN_REPRODUCTION_THRESHOLD = 4
 DOLPHIN_REPRODUCTION_COST = 12
 
 STEPS = 2000
-VISUALIZE_EVERY = 5
+VISUALIZE_EVERY = 2
 RANDOM_SEED = 0  # set None for full randomness
 
 # Colors (RGB floats)
