@@ -1,11 +1,8 @@
-# Dolphins vs Fish (Predator–Prey) — minimal deps (match MJ.py)
-# --------------------------------------------------------------
-# This remake uses ONLY the libraries MJ.py uses:
-#   - random
-#   - numpy
-#   - matplotlib.pyplot
-#   - matplotlib.animation.FuncAnimation
-# No dataclasses/typing/colors/etc.
+
+# Swarm intelligence - dolphins hunting fish in an ocean
+# ELC-5358 Intro to Computational Intelligence
+# December 1,2025
+# Paavan Patel
 
 import random
 import numpy as np
@@ -31,18 +28,17 @@ STEPS = 2000                    # total simulation steps
 VISUALIZE_EVERY = 2             # visualize every N steps
 RANDOM_SEED = 0                 # random seed for reproduction (set None for full randomness)
 
-# Colors (RGB floats)
-FISH_COLOR = (1.0, 0.647, 0.0)    # light blue
+# Colors (RGB)
+FISH_COLOR = (1.0, 0.647, 0.0)  # light orange
 DOLPHIN_COLOR = (0.0, 0.0, 0.0) # black
-#EMPTY_COLOR = (0.2, 0.6, 1.0)    # light blue [(1.0, 1.0, 1.0)   # white]
+OCEAN_COLOR = (0.2, 0.6, 1.0)   # light blue
 
 # ------------------ Utilities ------------------ #
 
-def torus(x, n):
+def torus(x, n):  # wrap around grid
     return x % n
 
-# Movement steps (8-neighborhood)
-MOVE_STEPS = [
+MOVE_STEPS = [    # Movement steps
     (-1, -1), (-1, 0), (-1, 1),
     (0, -1),           (0, 1),
     (1, -1),  (1, 0),  (1, 1)
@@ -56,16 +52,18 @@ def init_world(size):
     dolphins: list of dicts {x,y,energy}
     dolphin_grid: bool occupancy grid
     """
+
+    # create inital grid arrays for animals
     fish_grid = np.zeros((size, size), dtype=bool)
     dolphin_grid = np.zeros((size, size), dtype=bool)
 
     # place fish
     cells = [(i, j) for i in range(size) for j in range(size)]
-    random.shuffle(cells)
+    random.shuffle(cells) # randomize cell to randomize fish
     for (i, j) in cells[:INITIAL_FISH]:
         fish_grid[i, j] = True
 
-    # place dolphins on empty cells
+    # place dolphins where no fish
     dolphins = []
     placed = 0
     k = 0
@@ -74,7 +72,7 @@ def init_world(size):
         k += 1
         if not fish_grid[i, j] and not dolphin_grid[i, j]:
             dolphin_grid[i, j] = True
-            dolphins.append({"x": i, "y": j, "energy": DOLPHIN_EAT_GAIN})
+            dolphins.append({"x": i, "y": j, "energy": DOLPHIN_EAT_GAIN}) # initial energy for dolphins
             placed += 1
 
     return fish_grid, dolphins, dolphin_grid
@@ -91,15 +89,17 @@ def fish_step(fish_grid, dolphin_grid):
     for (x, y) in positions:
         if not fish_grid[x, y]:
             continue  # moved already
-        # try move
+
+        # try moving
         if random.random() < FISH_MOVE_PROB:
             dx, dy = random.choice(MOVE_STEPS)
             nx, ny = torus(x + dx, size), torus(y + dy, size)
             if (not fish_grid[nx, ny]) and (not dolphin_grid[nx, ny]) and (not new_fish[nx, ny]):
                 new_fish[x, y] = False
                 new_fish[nx, ny] = True
-                x, y = nx, ny  # update local pos for reproduction
-        # try reproduction into a random neighbor
+                x, y = nx, ny  # update position for reproduction
+
+        # try reproducing
         if random.random() < FISH_REPRODUCTION_PROB:
             dx, dy = random.choice(MOVE_STEPS)
             rx, ry = torus(x + dx, size), torus(y + dy, size)
@@ -115,12 +115,14 @@ def nearest_fish_direction(fish_grid, x, y, R):
     size = fish_grid.shape[0]
     best = None
     best_d = None
+
     for dx in range(-R, R + 1):
         for dy in range(-R, R + 1):
             if dx == 0 and dy == 0:
                 continue
+
             nx, ny = torus(x + dx, size), torus(y + dy, size)
-            if fish_grid[nx, ny]:
+            if fish_grid[nx, ny]: # finding nearest fish if any
                 d = max(abs(dx), abs(dy))
                 if best_d is None or d < best_d:
                     best_d = d
@@ -150,7 +152,7 @@ def dolphins_step(fish_grid, dolphins, dolphin_grid):
             step = random.choice(MOVE_STEPS)
         nx, ny = torus(x + step[0], size), torus(y + step[1], size)
 
-        # collision avoid: if already taken this tick, try one random fallback
+        # collision detection for other dolphins
         if new_grid[nx, ny]:
             fx, fy = nx, ny
             step = random.choice(MOVE_STEPS)
@@ -161,7 +163,7 @@ def dolphins_step(fish_grid, dolphins, dolphin_grid):
         x, y = nx, ny
         e -= DOLPHIN_STEP_COST
 
-        # eat
+        # eating fish
         if fish_grid[x, y]:
             fish_grid[x, y] = False
             e += DOLPHIN_EAT_GAIN
@@ -170,7 +172,7 @@ def dolphins_step(fish_grid, dolphins, dolphin_grid):
         if e <= 0:
             continue
 
-        # reproduction if energetic and a neighbor cell available (w.r.t. dolphins only)
+        # reproduction if enough energy
         if e >= DOLPHIN_REPRODUCTION_THRESHOLD:
             steps = MOVE_STEPS[:]
             random.shuffle(steps)
@@ -183,10 +185,11 @@ def dolphins_step(fish_grid, dolphins, dolphin_grid):
                     e -= DOLPHIN_REPRODUCTION_COST
                     break
 
-        # occupy & keep
+        # keep original dolphin
         new_grid[x, y] = True
         new_dolphins.append({"x": x, "y": y, "energy": e})
 
+    # update dolphin grid and list
     dolphin_grid[:, :] = new_grid
     dolphins[:] = new_dolphins
 
@@ -194,13 +197,14 @@ def dolphins_step(fish_grid, dolphins, dolphin_grid):
 
 def render_rgb(fish_grid, dolphin_grid):
     h, w = fish_grid.shape
-    img = np.ones((h, w, 3), dtype=float)
+    img = np.empty((h, w, 3), dtype=float)
+    img[:] = OCEAN_COLOR
     fish_mask = fish_grid & (~dolphin_grid)
     img[fish_mask] = FISH_COLOR
     img[dolphin_grid] = DOLPHIN_COLOR
     return img
 
-# ------------------ Main / Animation ------------------ #
+# ------------------ Main  ---------------------- #
 
 def main():
     if RANDOM_SEED is not None:
@@ -211,6 +215,7 @@ def main():
 
     fig, ax = plt.subplots(figsize=(6.5, 6.5))
     ax.set_axis_off()
+    ax.set_facecolor(OCEAN_COLOR)
 
     img = ax.imshow(render_rgb(fish_grid, dolphin_grid), interpolation="nearest", animated=True)
 
@@ -223,7 +228,7 @@ def main():
             ticks["t"] += 1
         img.set_data(render_rgb(fish_grid, dolphin_grid))
         ax.set_title(
-            f"Dolphins vs Fish — step {ticks['t']} | fish: {int(fish_grid.sum())} | dolphins: {len(dolphins)}"
+            f"Dolphins hunting Fish\nBlack hunting Orange"
         )
         return (img,)
 

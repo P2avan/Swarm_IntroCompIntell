@@ -1,3 +1,6 @@
+# from ChatGPT
+
+
 # Dolphins vs Fish (Predator–Prey) — minimal deps (match MJ.py)
 # --------------------------------------------------------------
 # This remake uses ONLY the libraries MJ.py uses:
@@ -13,28 +16,27 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # ------------------ Parameters ------------------ #
-GRID_SIZE = 80                  # width and Height of square grid
-INITIAL_FISH = 100              # initial number of fish
-INITIAL_DOLPHINS = 15           # initial number of dolphins
+GRID_SIZE = 80
+INITIAL_FISH = 1200
+INITIAL_DOLPHINS = 25
 
-FISH_REPRODUCTION_PROB = 0.0175 # prob fish reproduces
-FISH_MOVE_PROB = 0.7            # prob fish moves
+FISH_REPRODUCTION_PROB = 0.02   # chance per step to spawn into a neighbor
+FISH_MOVE_PROB = 0.9            # chance a fish attempts a move
 
-DOLPHIN_VISION_RADIUS = 5       # how far dolphins see
-DOLPHIN_MOVE_BIAS = 0.85        # prob dolphin moves toward fish if seen
-DOLPHIN_STEP_COST = 1           # energy cost of movement for dolphin
-DOLPHIN_EAT_GAIN = 4            # energy gained from eating a fish
-DOLPHIN_REPRODUCTION_THRESHOLD = 4 # energy needed for a dolphin to try to reproduce
-DOLPHIN_REPRODUCTION_COST = 16  # energy cost for dolphin reproduction
+DOLPHIN_VISION_RADIUS = 5       # how far dolphins "see" fish (Chebyshev)
+DOLPHIN_MOVE_BIAS = 0.85        # prob to bias step toward nearest seen fish
+DOLPHIN_STEP_COST = 1           # energy spent each step
+DOLPHIN_EAT_GAIN = 14           # energy from eating one fish
+DOLPHIN_REPRODUCTION_THRESHOLD = 24
+DOLPHIN_REPRODUCTION_COST = 12
 
-STEPS = 2000                    # total simulation steps
-VISUALIZE_EVERY = 2             # visualize every N steps
-RANDOM_SEED = 0                 # random seed for reproduction (set None for full randomness)
+STEPS = 2000
+VISUALIZE_EVERY = 5
+RANDOM_SEED = 0  # set None for full randomness
 
 # Colors (RGB floats)
-FISH_COLOR = (1.0, 0.647, 0.0)  # light orange
-DOLPHIN_COLOR = (0.0, 0.0, 0.0)
-BACKGROUND_COLOR = (0.2, 0.6, 1.0) # black
+FISH_COLOR = (0.2, 0.6, 1.0)    # light blue
+DOLPHIN_COLOR = (0.0, 0.0, 0.0) # black
 EMPTY_COLOR = (1.0, 1.0, 1.0)   # white
 
 # ------------------ Utilities ------------------ #
@@ -195,8 +197,7 @@ def dolphins_step(fish_grid, dolphins, dolphin_grid):
 
 def render_rgb(fish_grid, dolphin_grid):
     h, w = fish_grid.shape
-    img = np.empty((h, w, 3), dtype=float)
-    img[:] = BACKGROUND_COLOR  # blue background for empty cells
+    img = np.ones((h, w, 3), dtype=float)
     fish_mask = fish_grid & (~dolphin_grid)
     img[fish_mask] = FISH_COLOR
     img[dolphin_grid] = DOLPHIN_COLOR
@@ -213,7 +214,6 @@ def main():
 
     fig, ax = plt.subplots(figsize=(6.5, 6.5))
     ax.set_axis_off()
-    ax.set_facecolor(BACKGROUND_COLOR)
 
     img = ax.imshow(render_rgb(fish_grid, dolphin_grid), interpolation="nearest", animated=True)
 

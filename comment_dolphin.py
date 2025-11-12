@@ -1,3 +1,6 @@
+# from ChatGPT
+
+
 # Dolphins vs Fish (Predator–Prey) — minimal deps (match MJ.py)
 # --------------------------------------------------------------
 # PSEUDOCODE COMMENTS ADDED LINE-BY-LINE
