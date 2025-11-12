@@ -15,12 +15,12 @@ from matplotlib.animation import FuncAnimation
 # ------------------ Parameters ------------------ #
 GRID_SIZE = 80
 INITIAL_FISH = 100
-INITIAL_DOLPHINS = 15
+INITIAL_DOLPHINS = 14
 
 FISH_REPRODUCTION_PROB = 0.0175   # chance per step to spawn into a neighbor
 FISH_MOVE_PROB = 0.5            # chance a fish attempts a move
 
-DOLPHIN_VISION_RADIUS = 5       # how far dolphins "see" fish (Chebyshev)
+DOLPHIN_VISION_RADIUS = 4       # how far dolphins "see" fish (Chebyshev)
 DOLPHIN_MOVE_BIAS = 0.85        # prob to bias step toward nearest seen fish
 DOLPHIN_STEP_COST = 1           # energy spent each step
 DOLPHIN_EAT_GAIN = 4           # energy from eating one fish
@@ -223,7 +223,7 @@ def main():
             ticks["t"] += 1
         img.set_data(render_rgb(fish_grid, dolphin_grid))
         ax.set_title(
-            f"Dolphins vs Fish — step {ticks['t']} | fish: {int(fish_grid.sum())} | dolphins: {len(dolphins)}"
+            f"Dolphins vs Fish — Dolphins: Black and Fish: Blue\n"
         )
         return (img,)
 
