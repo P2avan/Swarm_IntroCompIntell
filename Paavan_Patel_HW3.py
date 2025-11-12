@@ -4,12 +4,13 @@
 # December 1,2025
 # Paavan Patel
 
+# ------------------ Libraries ------------------- #
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-# ------------------ Parameters ------------------ #
+# ------------------ Macros ---------------------- #
 GRID_SIZE = 80                  # width and Height of square grid
 INITIAL_FISH = 100              # initial number of fish
 INITIAL_DOLPHINS = 15           # initial number of dolphins
